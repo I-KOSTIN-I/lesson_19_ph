@@ -11,4 +11,4 @@ class AuthView(Resource):
         return auth_service.login(request.json)
 
     def put(self):
-        ...
+        return auth_service.get_new_tokens(request.json['refresh_token'])

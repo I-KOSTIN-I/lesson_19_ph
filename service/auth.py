@@ -1,6 +1,6 @@
 from dao.auth import AuthDAO
 from flask_restx import abort
-from utils import get_hash, generate_tokens
+from utils import get_hash, generate_tokens, decode_token
 
 
 class AuthService:
@@ -8,7 +8,7 @@ class AuthService:
     def __init__(self, dao: AuthDAO):
         self.dao = dao
 
-    def login(self, user_d):
+    def login(self, user_d: dict):
         user_data = self.dao.get_by_username(user_d['username'])
         if user_data is None:
             abort(401, message='user not found')
@@ -26,8 +26,16 @@ class AuthService:
 
         return tokens
 
+    def get_new_tokens(self, refresh_token: str):
 
+        decoded_token = decode_token(refresh_token, refresh_token=True)
 
+        tokens = generate_tokens(
+            user_d={
+                'username': decoded_token['username'],
+                'role': decoded_token['role']
+            }
+        )
 
-    def get_new_tokens(self, refresh_token):
-        pass
+        return tokens
+

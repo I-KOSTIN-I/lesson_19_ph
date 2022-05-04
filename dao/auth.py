@@ -8,11 +8,13 @@ class AuthDAO:
     def create(self, user_d):
         pass
 
-    def get_by_username(self, user_d):
-        user = self.session.query(User).filter(User.username == user_d).all()
+    def get_by_username(self, username):
+        user = self.session.query(User).filter(User.username == username).first()
         data = {
             "username": user.username,
-            "role": user.role
+            "role": user.role,
+            "password": user.password
         }
 
         return data
+
