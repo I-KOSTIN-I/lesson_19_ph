@@ -5,9 +5,8 @@ import base64
 from datetime import datetime, timedelta
 import jwt
 from flask import request, current_app
-from dao.auth import AuthDAO
 from typing import Dict
-
+import implemented
 
 
 def get_hash(password: str) -> str:
@@ -80,7 +79,7 @@ def auth_required(func):
 
         decoded_token = decode_token(token)
 
-        if not AuthDAO.get_by_username(decoded_token['username']):
+        if not implemented.user_service.get_by_username(decoded_token['username']):
             abort(401)
 
         return func(*args, **kwargs)
@@ -97,7 +96,7 @@ def admin_access_required(func):
         if decoded_token['role'] != 'admin':
             abort(403)
 
-        if not AuthDAO.get_by_username(decoded_token['username']):
+        if not implemented.user_service.get_by_username(decoded_token['username']):
             abort(401)
 
         return func(*args, **kwargs)
